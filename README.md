@@ -4,7 +4,7 @@ A local, single-user dashboard that runs a **[Claude Agent SDK](https://docs.cla
 
 It's one Node process serving a browser UI — no build step, no database, no accounts. Your tasks, transcripts, and ledger are plain JSON in the folder.
 
-<!-- screenshot: add a dashboard screenshot/GIF here before publishing -->
+![Central Planner — a task workbench with a live Claude session, artifact viewer, and project nav](docs/screenshot.png)
 
 > [!IMPORTANT]
 > Central Planner makes real, billed Claude calls using your own credentials (an `ANTHROPIC_API_KEY` or your Claude Code login) — there's no spend cap. It has no login and binds to `localhost`; don't expose it to the public internet.
