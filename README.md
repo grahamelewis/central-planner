@@ -6,12 +6,8 @@ It's one Node process serving a browser UI — no build step, no database, no ac
 
 <!-- screenshot: add a dashboard screenshot/GIF here before publishing -->
 
-> ⚠️ **This runs real, billed Claude calls and has no authentication.**
-> Launching a task, sending a message, and the profile feature each spawn a real
-> Claude Agent SDK session billed to your Claude account — there is **no
-> spend cap**. The server binds to `localhost` and has no login of its own; don't
-> expose it publicly. A task's session can run tools (including bash) inside that
-> project's folder, so keep each project's `root` narrow.
+> [!IMPORTANT]
+> Central Planner makes real, billed Claude calls using your own credentials (an `ANTHROPIC_API_KEY` or your Claude Code login) — there's no spend cap. It has no login and binds to `localhost`; don't expose it to the public internet.
 
 ## Quickstart
 
