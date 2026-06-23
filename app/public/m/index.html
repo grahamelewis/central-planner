@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Central Planner</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Planner">
+<meta name="theme-color" content="#101220">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="m.css">
+</head>
+<body>
+
+<header id="top">
+  <span class="brand">central <span>/ planner</span></span>
+  <span class="chip" id="wkChip">—</span>
+</header>
+
+<main id="view"></main>
+
+<div id="taskSheet" class="sheet"></div>
+<div id="addSheet" class="sheet"></div>
+
+<nav id="tabbar">
+  <button data-tab="tasks" class="on"><span class="ti">▮</span>tasks</button>
+  <button data-tab="add" class="big">＋</button>
+  <button data-tab="art"><span class="ti">⌗</span>artifacts</button>
+</nav>
+
+<div id="toast"></div>
+<script src="m.js"></script>
+</body>
+</html>

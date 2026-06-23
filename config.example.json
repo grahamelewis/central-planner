@@ -1,0 +1,34 @@
+{
+  "//": "Copy this file to config.json (gitignored) and fill it in — or run the guided setup. Every field is optional; omitted fields use the defaults shown here.",
+  "user": { "name": "" },
+  "port": 4242,
+  "weeklyHourTarget": 35,
+  "notifications": {
+    "//": "ntfy.sh push. Topic is the ONLY secret — make it random. Empty disables pushes. ntfyDetail:true sends task text to the PUBLIC broker.",
+    "ntfyTopic": "",
+    "ntfyClickBase": "",
+    "ntfyDetail": false
+  },
+  "artifactGlobs": {
+    "//": "Optional — directories the artifact/file scanners skip. Omit to use the built-in defaults.",
+    "ignoreDirs": ["node_modules", ".git", "data", "_literature", "literature", ".claude", "renv", ".venv", "__pycache__"],
+    "maxDepth": 6
+  },
+  "projects": {
+    "//": "Keys are permanent identifiers (tasks/ledger/etc. are stored under them) — pick a short slug. status: active (default, no tag) | trial (tag in nav) | inactive (hidden from nav & overview). Manage these in-app via the Manage Projects tab.",
+    "myproject": {
+      "name": "My Project",
+      "root": "/absolute/path/to/your/project",
+      "color": "#7ef5c2",
+      "texWatch": null,
+      "status": "active"
+    },
+    "scratch": {
+      "name": "scratch",
+      "root": "/absolute/path/to/another/project",
+      "color": "#f5d57e",
+      "texWatch": "slides/main.tex",
+      "status": "trial"
+    }
+  }
+}

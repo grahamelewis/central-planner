@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>local.projectmanager</string>
+
+  <!-- zsh -lc alone is NOT enough: login non-interactive shells skip ~/.zshrc,
+       where brew shellenv usually lives, so node/julia/latexmk would be missing.
+       An explicit PATH covers the server AND everything it spawns. -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/opt/homebrew/sbin:/Library/TeX/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-lc</string>
+    <string>exec node server.js</string>
+  </array>
+
+  <!-- EDIT THIS to the absolute path of this repo's app/ directory. -->
+  <key>WorkingDirectory</key>
+  <string>/absolute/path/to/projectManager/app</string>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/tmp/projectmanager.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/projectmanager.log</string>
+</dict>
+</plist>

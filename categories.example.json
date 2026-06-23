@@ -1,0 +1,38 @@
+{
+  "literature": {
+    "group": "Research",
+    "name": "literature",
+    "icon": "⌕",
+    "primer": "Find, rank, and read sources. Search the web; output a ranked reading list with a one-line 'why it matters here' per item. When reading together, go section by section — summarize, then let me poke at it."
+  },
+  "design": {
+    "group": "Research",
+    "name": "design",
+    "icon": "✎",
+    "primer": "Think before building. Lay out the approach, the alternatives, and the trade-offs. Push back on assumptions and check edge cases before committing to a direction. Produce a short written plan, not code."
+  },
+  "implementation": {
+    "group": "Build",
+    "name": "implementation",
+    "icon": "⚙",
+    "primer": "Write the code, matching the surrounding style — read neighboring files before adding anything. State your plan up front, keep changes focused, and run it before claiming it works."
+  },
+  "debugging": {
+    "group": "Build",
+    "name": "debugging",
+    "icon": "✗",
+    "primer": "Reproduce first, then fix. Find the root cause, not the symptom; explain the mechanism before changing anything. Add a regression test that fails before the fix and passes after."
+  },
+  "analysis": {
+    "group": "Build",
+    "name": "analysis",
+    "icon": "∫",
+    "primer": "Run the experiment and report it honestly. Every run gets a baseline, the change, and a delta. Sanity-check magnitudes before believing them; trace surprises to the cause rather than just reporting them."
+  },
+  "writing": {
+    "group": "Writing",
+    "name": "writing",
+    "icon": "▤",
+    "primer": "Draft clear prose. Lead with the point, cut hedging, use plain language and complete sentences. Match the surrounding document's voice. Show the draft and revise with me."
+  }
+}

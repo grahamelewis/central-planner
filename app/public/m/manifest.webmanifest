@@ -1,0 +1,14 @@
+{
+  "name": "Central Planner",
+  "short_name": "Planner",
+  "description": "Research mission control — tasks, Claude sessions, artifacts",
+  "start_url": "/m/",
+  "scope": "/m/",
+  "display": "standalone",
+  "background_color": "#101220",
+  "theme_color": "#101220",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

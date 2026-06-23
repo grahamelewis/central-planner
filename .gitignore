@@ -1,0 +1,31 @@
+# --- user-specific config (ship config.example.json instead) ---
+config.json
+# generated profile (contains the user's name/bio)
+profile.json
+
+# --- dependencies ---
+node_modules/
+app/node_modules/
+
+# --- OS / editor cruft ---
+.DS_Store
+
+# --- Claude Code: ship the /setup command, ignore local settings/auth ---
+.claude/*
+!.claude/commands/
+
+# --- real research data (root-anchored; the app recreates these dirs on first
+#     write, so a fresh clone boots clean). Ship sample/example files instead. ---
+/tasks/
+/ledger/
+/snapshots/
+/transcripts/
+/abstracts/
+/categories.json
+
+# --- early design mockups (contain personal/identifying content) ---
+# dashboard_templates.html has a real name/affiliation; dashboard_hybrid.html is
+# the design reference CONTRACT.md links to — un-ignore it later if you scrub it
+# and want to ship it as a sample.
+/dashboard_hybrid.html
+/dashboard_templates.html
