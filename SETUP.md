@@ -7,14 +7,17 @@ can also follow these steps by hand.
 ## Prerequisites
 
 - **Node ≥ 20** — check with `node -v`.
-- **An Anthropic API key.** Central Planner runs real Claude Agent SDK sessions,
-  billed pay-as-you-go. Get a key at <https://platform.claude.com>, then set it
+- **Access to Claude.** Central Planner runs real Claude Agent SDK sessions,
+  which are billed — **there is no spend cap.** The supported path is an Anthropic
+  API key (pay-as-you-go): get one at <https://platform.claude.com>, then set it
   in your environment:
   ```
   export ANTHROPIC_API_KEY=sk-ant-...
   ```
-  Add it to your shell profile to persist. Task launches, messages, and the
-  profile feature all spend on this key — **there is no spend cap.**
+  (add it to your shell profile to persist). Alternatively, if you already use
+  Claude Code, the dashboard's sessions can run on that login and no API key is
+  needed. Either way, task launches, messages, and the profile feature spend on
+  whichever credentials you use.
 
 ## 1. Install
 

@@ -8,7 +8,7 @@ It's one Node process serving a browser UI — no build step, no database, no ac
 
 > ⚠️ **This runs real, billed Claude calls and has no authentication.**
 > Launching a task, sending a message, and the profile feature each spawn a real
-> Claude Agent SDK session billed to your `ANTHROPIC_API_KEY` — there is **no
+> Claude Agent SDK session billed to your Claude account — there is **no
 > spend cap**. The server binds to `localhost` and has no login of its own; don't
 > expose it publicly. A task's session can run tools (including bash) inside that
 > project's folder, so keep each project's `root` narrow.
@@ -30,7 +30,7 @@ for your confirmation at each step. (Requires [Claude Code](https://docs.claude.
 
 ```bash
 cd app && npm install && cd ..
-export ANTHROPIC_API_KEY=sk-ant-...        # from https://platform.claude.com
+export ANTHROPIC_API_KEY=sk-ant-...        # supported path; skip if already signed into Claude Code
 cp config.example.json config.json         # then edit: your name + projects
 cd app && npm start                        # → http://localhost:4242
 ```
@@ -41,7 +41,7 @@ with the built-in folder picker. Full details in [`SETUP.md`](SETUP.md).
 ## Prerequisites
 
 - **Node ≥ 20**
-- An **`ANTHROPIC_API_KEY`** (pay-as-you-go; get one at <https://platform.claude.com>)
+- **Access to Claude** — an **`ANTHROPIC_API_KEY`** (pay-as-you-go, <https://platform.claude.com>) is the supported path; if you already use Claude Code, the dashboard runs on that login instead
 - Optional, per-feature: `latexmk` + a TeX distribution (live PDF recompile);
   `julia` / `python` / `R` (the in-app file runner)
 

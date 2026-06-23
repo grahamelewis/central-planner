@@ -8,8 +8,9 @@ rewind, and a time/token ledger. The server and browser frontend live in `app/`
 
 ## How it runs
 - `cd app && npm install`, then `npm start` → http://localhost:4242
-- Requires **Node ≥ 20** and an **`ANTHROPIC_API_KEY`** in the environment — the
-  dashboard's task sessions are real, **billed** Claude calls.
+- Requires **Node ≥ 20** and access to Claude — set an **`ANTHROPIC_API_KEY`**
+  (the supported path), or be signed into Claude Code, which the SDK will use.
+  The dashboard's task sessions are real, **billed** Claude calls.
 - Per-user config lives in a gitignored `config.json` at the repo root
   (template: `config.example.json`). The repo ships with none.
 
@@ -19,8 +20,9 @@ the user is setting up. Help them get running:
 1. First **read** `README.md` and `SETUP.md` and give the user a short summary of
    what this tool is and the steps you'll take — **do NOT edit any files or run
    any commands until they confirm the plan.**
-2. After they confirm, follow `SETUP.md`: verify Node ≥ 20 and that
-   `ANTHROPIC_API_KEY` is set (explain how to get/set it if not), run
+2. After they confirm, follow `SETUP.md`: verify Node ≥ 20 and that Claude is
+   reachable (an `ANTHROPIC_API_KEY` is the supported path; an existing Claude
+   Code login also works — explain how to get a key if neither is present), run
    `npm install` in `app/`, write a minimal `config.json` from
    `config.example.json` (ask for their name and, optionally, a first project
    folder), then start the server.
