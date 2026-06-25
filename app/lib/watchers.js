@@ -114,6 +114,12 @@ export function startArtifactWatchers() {
         ignoreInitial: false,
         ignorePermissionErrors: true,
         usePolling: false,
+        // Do NOT follow symlinks. An alias/symlink inside one project's root
+        // (e.g. pointing at another project's folder) would otherwise make this
+        // watcher walk *through* it and index the other project's files as this
+        // project's artifacts — they'd then "follow" the user across projects.
+        // Also avoids symlink loops and keeps a watcher within its narrow root.
+        followSymlinks: false,
         depth: ARTIFACT_GLOBS.maxDepth,
         alwaysStat: true,
         ignored: makeIgnoredFn(root),
