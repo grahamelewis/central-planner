@@ -59,7 +59,9 @@ export function createProject({ name, root, color, status } = {}) {
   const designation = STATUSES.includes(status) ? status : 'active';
 
   const base = slugify(name) || 'project';
-  let key = base;
+  // frontend view names — a project keyed 'settings' would shadow that view
+  const RESERVED = new Set(['ov', 'cats', 'manage', 'about', 'settings', 'new', 'git']);
+  let key = RESERVED.has(base) ? `${base}_2` : base;
   for (let n = 2; Object.prototype.hasOwnProperty.call(PROJECTS, key); n++) key = `${base}_${n}`;
 
   PROJECTS[key] = {

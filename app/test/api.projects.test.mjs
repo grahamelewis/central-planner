@@ -91,6 +91,16 @@ test('a duplicate name mints a distinct, suffixed key (no clobber)', async () =>
   assert.ok(body.key in state.projects, 'duplicate survives under its own key');
 });
 
+test('frontend view names are reserved — "Settings" never mints the key `settings`', async () => {
+  // 'ov'/'cats'/'manage'/'about'/'settings' are view keys in the frontend
+  // router; a project minted under one of them would shadow that view
+  const { status, body } = await sb.fetchJson('POST', '/api/projects', {
+    name: 'Settings', root: os.tmpdir(),
+  });
+  assert.equal(status, 201);
+  assert.match(body.key, /^settings_\d+$/, 'reserved slug gets a suffix');
+});
+
 test('POST /api/projects with no name is rejected 400', async () => {
   const { status, body } = await sb.fetchJson('POST', '/api/projects', { root: os.tmpdir() });
   assert.equal(status, 400);
