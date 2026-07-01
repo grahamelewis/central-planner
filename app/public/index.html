@@ -10,6 +10,14 @@ if (Math.min(screen.width, screen.height) < 700 && !location.search.includes('de
     && /Mobi|iPhone|Android/.test(navigator.userAgent)) {
   location.replace('/m/');
 }
+// theme bootstrap — runs before the stylesheet loads so there is no dark flash;
+// app.js keeps it live afterwards (Settings + prefers-color-scheme changes)
+try {
+  var _t = localStorage.getItem('theme') || 'system';
+  if (_t === 'light' || (_t === 'system' && matchMedia('(prefers-color-scheme: light)').matches)) {
+    document.documentElement.dataset.theme = 'light';
+  }
+} catch (e) { /* private mode etc — stay dark */ }
 </script>
 <link rel="stylesheet" href="style.css">
 <!-- console rendering: markdown + sanitizer + LaTeX (graceful fallback to plain text offline).
@@ -64,6 +72,11 @@ if (Math.min(screen.width, screen.height) < 700 && !location.search.includes('de
 <!-- ════════════════ ABOUT YOU (profile menu) ════════════════ -->
 <div class="view" id="v-about">
   <div class="frame" id="aboutFrame"></div>
+</div>
+
+<!-- ════════════════ SETTINGS (profile menu) ════════════════ -->
+<div class="view" id="v-settings">
+  <div class="frame" id="settingsFrame"></div>
 </div>
 
 <!-- ════════════════ ADD TASK MODAL ════════════════ -->

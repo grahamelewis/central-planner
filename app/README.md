@@ -60,6 +60,8 @@ npm start          # → http://127.0.0.1:4242  (localhost only — never expose
 
 ## Notes
 
+- **Light mode**: profile menu (your name, top left) → Settings → theme System / Dark /
+  Light. System follows the macOS appearance; the choice is saved per-browser.
 - Launching/messaging tasks spawns real Claude Code sessions (billed). Interrupt from the UI.
 - Sessions run with `settingSources: ['project']`, so each repo's `.claude` settings apply.
 - To run the server permanently on a desktop and use it from a laptop anywhere,

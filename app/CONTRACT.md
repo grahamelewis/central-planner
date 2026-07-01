@@ -331,6 +331,13 @@ New modules: `lib/runner.js` (run pinned files), `lib/pins.js` (data/folder card
 `lib/dataview.js` (pandas head-of-table preview), `public/hl.js` (editor syntax overlay),
 `public/m/` (phone PWA).
 
+Theming (frontend-only, desktop app): every themed color in `style.css` is a CSS variable on
+`:root`; `html[data-theme="light"]` (one override block at the end of the file) is the light
+palette. A Settings view (profile menu ▾ → Settings) holds a System / Dark / Light control;
+the choice persists in `localStorage.theme` and 'system' tracks `prefers-color-scheme` live.
+A `<head>` bootstrap in `index.html` applies the attribute before the stylesheet loads (no
+flash). `public/m/` is still dark-only.
+
 ### Routes added
 ```
 DELETE /api/tasks/:project/:id                       delete task (+ transcript, snapshots)

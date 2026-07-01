@@ -51,6 +51,31 @@ const dirCache = {};      // `${project}::${rel}` → { entries, sig, loaded, lo
 
 let form = null;          // add-task modal form state
 
+/* ───────────────────────── theme ───────────────────────── */
+/* 'system' | 'dark' | 'light' in localStorage; the <head> bootstrap applied it
+   before first paint, this keeps it live (Settings clicks + macOS switching) */
+
+const sysLight = matchMedia('(prefers-color-scheme: light)');
+
+function themePref() {
+  try { return localStorage.getItem('theme') || 'system'; } catch { return 'system'; }
+}
+
+function applyTheme() {
+  const t = themePref();
+  const light = t === 'light' || (t === 'system' && sysLight.matches);
+  if (light) document.documentElement.dataset.theme = 'light';
+  else delete document.documentElement.dataset.theme;
+}
+
+function setTheme(t) {
+  try { localStorage.setItem('theme', t); } catch { /* private mode — session-only */ }
+  applyTheme();
+  if (ui.view === 'settings') renderSettings();
+}
+
+sysLight.addEventListener('change', () => { if (themePref() === 'system') applyTheme(); });
+
 /* ───────────────────────── helpers ───────────────────────── */
 
 function esc(s) {
@@ -1001,8 +1026,9 @@ function renderAll() {
   else if (ui.view === 'cats') renderCats();
   else if (ui.view === 'manage') renderManage();
   else if (ui.view === 'about') renderAbout();
+  else if (ui.view === 'settings') renderSettings();
   else if (state.projects[ui.view]) renderWB(ui.view);
-  document.querySelectorAll('#v-ov, #v-cats, #v-manage, #v-about, #projectViews > .view')
+  document.querySelectorAll('#v-ov, #v-cats, #v-manage, #v-about, #v-settings, #projectViews > .view')
     .forEach(x => x.classList.toggle('show', x.id === 'v-' + ui.view));
 }
 
@@ -1019,7 +1045,7 @@ function go(v) {
   }
   // an inactive project has no nav tab / workbench view — fall back to overview
   const isProj = state.projects[v] && state.projects[v].status !== 'inactive';
-  ui.view = (v === 'ov' || v === 'cats' || v === 'manage' || v === 'about' || isProj) ? v : 'ov';
+  ui.view = (v === 'ov' || v === 'cats' || v === 'manage' || v === 'about' || v === 'settings' || isProj) ? v : 'ov';
   renderAll();
   window.scrollTo(0, 0);
 }
@@ -1976,7 +2002,7 @@ function manualCard(key, task) {
     <div class="qmeta"><span class="ovs manual">MAN</span> manual — no agent attached${task.due ? ` · due ${esc(task.due)}` : ''}</div>
     ${task.context?.notes ? `<div class="qnotes" style="margin-top:14px;">${esc(task.context.notes)}</div>` : ''}
     <div class="qlaunch">
-      <button id="markDoneBtn" style="background:var(--glass);color:var(--ink);border:1px solid #ffffff2a;">✓ Mark done</button>
+      <button id="markDoneBtn" style="background:var(--glass);color:var(--ink);border:1px solid var(--ov2a);">✓ Mark done</button>
     </div>
   </div></div>`;
 }
@@ -2007,9 +2033,9 @@ function sessionBody(key, task) {
   const parts = [];
   if (st === 'waiting' && task.handoff) {
     // Claude proposed completion — the user decides: accept, or push back below
-    parts.push(`<div class="runHint" style="color:var(--green);border-color:#7ef5c22e;background:#7ef5c20d;align-items:center;">
+    parts.push(`<div class="runHint" style="color:var(--green);border-color:rgb(from var(--green) r g b / 18%);background:rgb(from var(--green) r g b / 5%);align-items:center;">
       <span class="live"></span>Claude considers this task complete — review the handoff, then
-      <button id="acceptDoneBtn" style="background:var(--green);color:#0c281b;border:none;border-radius:8px;
+      <button id="acceptDoneBtn" style="background:var(--green);color:var(--on-accent);border:none;border-radius:8px;
         padding:5px 14px;font-weight:800;font-size:11px;cursor:pointer;margin-left:6px;">✓ accept &amp; close</button>
       <span style="color:var(--dim);font-size:10.5px;">or reply below to keep working</span></div>`);
     parts.push(handoffCard(task, true));
@@ -2019,7 +2045,7 @@ function sessionBody(key, task) {
   }
   if (st === 'running') {
     parts.push(perOf(key).interrupting === task.id
-      ? `<div class="runHint" style="color:var(--yellow);border-color:#f5d57e2e;background:#f5d57e0d;"><span class="live" style="background:var(--yellow)"></span>interrupting — finishing the current step…</div>`
+      ? `<div class="runHint" style="color:var(--yellow);border-color:rgb(from var(--yellow) r g b / 18%);background:rgb(from var(--yellow) r g b / 5%);"><span class="live" style="background:var(--yellow)"></span>interrupting — finishing the current step…</div>`
       : `<div class="runHint"><span class="live"></span>Claude is working — follow along in the <b>≋ console</b> tab</div>`);
   }
   if (st === 'waiting' && task.question) {
@@ -2028,7 +2054,7 @@ function sessionBody(key, task) {
   }
   const perms = pendingPerms[k];
   if (perms && perms.length) {
-    parts.push(`<div class="runHint" style="color:var(--yellow);border-color:#f5d57e2e;background:#f5d57e0d;">
+    parts.push(`<div class="runHint" style="color:var(--yellow);border-color:rgb(from var(--yellow) r g b / 18%);background:rgb(from var(--yellow) r g b / 5%);">
       <span class="live" style="background:var(--yellow)"></span>
       ${perms.length} approval${perms.length > 1 ? 's' : ''} pending — review in the <b>≋ console</b> tab</div>`);
   }
@@ -3328,12 +3354,39 @@ function catGroups() {
 
 /* designation accent colors: [text, chip background] */
 const GROUP_COLOR = {
-  'Structural': ['var(--purple)', '#251c40'],
+  'Structural': ['var(--purple)', 'var(--des-structural)'],
   'Empirics': ['var(--blue)', 'var(--blue-d)'],
-  'Literature': ['var(--yellow)', '#3a3014'],
-  'Final Goods': ['var(--green)', '#143527'],
+  'Literature': ['var(--yellow)', 'var(--des-literature)'],
+  'Final Goods': ['var(--green)', 'var(--des-final)'],
 };
 const groupColor = (g) => GROUP_COLOR[g] || ['var(--blue)', 'var(--blue-d)'];
+
+/* ───────────────────────── settings (profile menu) ───────────────────────── */
+
+function renderSettings() {
+  const host = document.getElementById('settingsFrame');
+  if (!host) return;
+  const cur = themePref();
+  const opts = [
+    ['system', '◐ System', 'follows the macOS appearance'],
+    ['dark', '● Dark', 'the classic night dashboard'],
+    ['light', '○ Light', 'paper mode for bright rooms'],
+  ];
+  host.innerHTML = `
+    <h1>Settings</h1>
+    <div class="setSec">
+      <h3>Appearance</h3>
+      <div class="setRow">
+        <div class="setLbl">Theme<small>${esc(opts.find(o => o[0] === cur)?.[2] || '')}</small></div>
+        <div class="segCtl" id="themeSeg">
+          ${opts.map(([v, label]) =>
+    `<div class="segOpt ${cur === v ? 'on' : ''}" data-th="${esc(v)}">${esc(label)}</div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  host.querySelectorAll('[data-th]').forEach(el =>
+    el.addEventListener('click', () => setTheme(el.dataset.th)));
+}
 
 /* ───────────────────────── about you (profile menu) ───────────────────────── */
 
@@ -4244,6 +4297,7 @@ function wireGlobal() {
       // no stopPropagation: the document once-listener below closes the menu
       if (it.dataset.pm === 'Manage Projects') { go('manage'); return; }
       if (it.dataset.pm === 'About You') { go('about'); return; }
+      if (it.dataset.pm === 'Settings') { go('settings'); return; }
       toast(`${it.dataset.pm} — coming soon`);
     }));
     setTimeout(() => document.addEventListener('click', () => menu.remove(), { once: true }), 0);
