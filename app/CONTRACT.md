@@ -171,7 +171,8 @@ for await (const msg of q) {
 `allowedTools`: omit (defaults) — but when `context.web_search.enabled`, ensure `'WebSearch'` and
 `'WebFetch'` are included via `allowedTools: ['WebSearch','WebFetch']`? NO — allowedTools as an
 allowlist would *restrict* everything else. Instead leave tools default; when web_search is
-DISABLED pass `disallowedTools: ['WebSearch','WebFetch']`.
+DISABLED pass `disallowedTools: ['WebSearch','WebFetch']`. This flag is editable post-creation and
+re-read at the start of every turn, so a toggle takes effect on the next turn.
 
 ### Context packet (turn 1 prompt) — assemble in this order
 1. Category primer: from `getCategories()[task.category].primer` (if include_category_primer)
@@ -306,6 +307,9 @@ app.js) but replace ALL mock data with live data:
   input), notes, launch: queue|start now). Save → POST /api/tasks (+ optional /launch). The JSON
   preview pane updates live from the actual form state (build the object, JSON.stringify, syntax
   highlight basic or plain).
+- Web-search toggle (on/off only) is also editable in-task after creation — on the launch card
+  (queued) and in the session bar next to model/oversight (running/waiting); hidden for
+  done/archived/manual. Flips via PATCH /api/tasks/:p/:id with the full context; takes effect next turn.
 - Categories view: render from categories data (read-only v1, ✎ disabled).
 - Heartbeat: every 30s while document.hasFocus(), POST /api/heartbeat {project: currentView==
   overview ? null→skip : projectKey, seconds:30}. Only when a project view is open.

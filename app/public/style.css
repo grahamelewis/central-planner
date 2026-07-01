@@ -853,6 +853,17 @@ body.dragging iframe{ pointer-events:none; }
 .mdlSel:hover{ border-color:#7ef5c25a; }
 .mdlSel option{ background:#171a2c; color:var(--ink); }
 
+/* web-search on/off toggle in the session bar — a peer of .mdlSel (same box
+   metrics) so the editable settings form one tidy group; dim when off, green
+   when on. Scoped class, NOT .qchip (which the launch card + modals share). */
+.webtog{
+  background:#171a2c; color:var(--dim); border:1px solid var(--line); border-radius:7px;
+  font-size:10px; padding:2px 8px; font-family:ui-monospace,Menlo,monospace;
+  cursor:pointer; vertical-align:middle; user-select:none; white-space:nowrap;
+}
+.webtog:hover{ border-color:#7ef5c25a; }
+.webtog.on{ color:var(--green); border-color:#7ef5c23a; }
+
 /* WYSIWYG html edit toolbar */
 .editBar{
   display:flex; align-items:center; gap:4px; flex-wrap:wrap; flex-shrink:0;

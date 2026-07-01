@@ -1769,6 +1769,18 @@ async function setTaskModel(key, task, modelId) {
   toast(modelId ? `next turn runs on ${MODELS.find(m => m.id === modelId)?.label || modelId}` : 'next turn uses the default model');
 }
 
+async function setTaskWebSearch(key, task, next) {
+  const local = tasksOf(key).find(t => t.id === task.id) || task;
+  const cur = local.context?.web_search || { enabled: false, sources: [] };
+  const ws = { enabled: next, sources: cur.sources || [] }; // preserve sources — toggle is on/off only
+  local.context = { ...(local.context || {}), web_search: ws }; // optimistic; task:update broadcast confirms
+  renderWB(key);
+  // ★ send the FULL merged context — updateTask shallow-merges, so a partial
+  // { web_search } would wipe pinned files / notes / include flags
+  await api('PATCH', `/api/tasks/${enc(key)}/${enc(task.id)}`, { context: { ...local.context, web_search: ws } });
+  toast('web search ' + (next ? 'on' : 'off') + ' — applies to the next message');
+}
+
 const SNAP_ICON = { modified: '±', created: '+', deleted: '−' };
 
 function snapsHtml(key, task) {
@@ -1936,7 +1948,6 @@ function launchCard(key, task) {
   if (ctx.include_last_session) chips.push('✓ last session');
   if (ctx.include_sibling_tasks) chips.push('✓ sibling tasks');
   if (ctx.include_category_primer) chips.push('✓ category primer');
-  if (ctx.web_search?.enabled) chips.push('🌐 web search' + (ctx.web_search.sources?.length ? ' — ' + ctx.web_search.sources.join(' · ') : ''));
   (Array.isArray(task.upstream) ? task.upstream : []).forEach(id => chips.push('⛓ handoff: ' + id));
   (Array.isArray(ctx.files) ? ctx.files : []).forEach(f => chips.push(String(f)));
   return `<div class="taskHero"><div class="queueCard">
@@ -1946,8 +1957,10 @@ function launchCard(key, task) {
       <span class="qchip" style="font-size:9.5px;padding:2px 9px;">${esc(task.category || '')}</span>
       queued — session not yet started</div>
     <div class="qsec">Context packet — assembled at launch</div>
-    <div class="qchips">${chips.map(c =>
-      `<span class="qchip ${/^[✓⛓]|^🌐/u.test(c) ? 'on' : ''}">${esc(c)}</span>`).join('')}</div>
+    <div class="qchips">
+      <span class="qchip ${ctx.web_search?.enabled ? 'on' : ''}" data-webtoggle style="cursor:pointer;" title="click to turn web search on/off — applies to the next message">🌐 web search${ctx.web_search?.enabled ? (ctx.web_search.sources?.length ? ' — ' + esc(ctx.web_search.sources.join(' · ')) : '') : ' off'}</span>
+      ${chips.map(c =>
+      `<span class="qchip ${/^[✓⛓]/u.test(c) ? 'on' : ''}">${esc(c)}</span>`).join('')}</div>
     ${ctx.notes ? `<div class="qsec">Your notes to Claude</div><div class="qnotes">${esc(ctx.notes)}</div>` : ''}
     <div class="qlaunch">
       <button id="launchBtn">▶ Launch session</button>
@@ -2023,9 +2036,14 @@ function sessionBody(key, task) {
     parts.push(`<div class="sideNote">compose below — the conversation lives in the <b>≋ console</b> tab of the center pane</div>`);
   }
   const s = task.session;
+  // web-search toggle only where another turn can run — not done/archived
+  const webOn = task.context?.web_search?.enabled;
+  const webChip = (st === 'done' || task.archived) ? ''
+    : `<span class="webtog ${webOn ? 'on' : ''}" data-webtoggle title="click to turn web search on/off — applies to the next message">web ${webOn ? 'on' : 'off'}</span>`;
   const sessbar = `<div class="sessbar">
     <span>${modelSelHtml(task)}</span>
     <span>${permSelHtml(task)}</span>
+    ${webChip}
     ${s
     ? `<span><b>${fmtTok((s.tokensIn || 0) + (s.tokensOut || 0))} tok</b> · ${s.turns || 0} turn${s.turns === 1 ? '' : 's'}</span>`
     : '<span>no session yet</span>'}
@@ -3235,6 +3253,12 @@ function wireWB(root, key, task, files) {
   root.querySelectorAll('.permSel').forEach(el => el.addEventListener('change', () => {
     setTaskPerm(key, task, el.value || null);
   }));
+  // web-search on/off toggle — same chip on the launch card (queued) and the
+  // session bar (running/waiting); flips take effect on the next turn
+  root.querySelectorAll('[data-webtoggle]').forEach(el => el.addEventListener('click', () => {
+    const live = tasksOf(key).find(t => t.id === task.id) || task; // read fresh state, not the render-time closure
+    setTaskWebSearch(key, task, !(live.context?.web_search?.enabled));
+  }));
 
   const intr = root.querySelector('#interruptBtn');
   if (intr) intr.addEventListener('click', async () => {
@@ -3704,7 +3728,7 @@ function openModal(presetProject) {
 
     include_abstract: true, include_last_session: true,
     include_sibling_tasks: true, include_category_primer: true,
-    web_enabled: false, web_sources: '',
+    web_enabled: true, web_sources: '',
     files: '', notes: '',
   };
   renderModal();
